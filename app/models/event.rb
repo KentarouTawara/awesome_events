@@ -1,4 +1,5 @@
 class Event < ApplicationRecord
+  has_many :tickets, dependent: :destroy
   belongs_to :owner, class_name: "User"
 
   validates :name, length: { maximum: 50}, presence: true
@@ -7,6 +8,11 @@ class Event < ApplicationRecord
   validates :start_at, presence: true
   validates :end_at, presence: true
   validate :start_at_should_be_before_end_at
+
+  def created_by?(user)
+    return false unless user
+    owner_id == user.id
+  end
 
   private
 
